@@ -9,8 +9,8 @@ from tqdm import trange
 
 # HYPERPARAMS
 KERNEL_SIZE = 5
-POOL_SIZE = 4
-FILTER = 3
+POOL_SIZE = 3
+FILTER = 2
 
 class MNISTData(object):
     def __init__(self):
@@ -39,7 +39,8 @@ class MNISTData(object):
         np.random.shuffle(index)
         feature_rand = np.reshape(feature[index], [-1,28,28,1])
         label_rand = tf.keras.utils.to_categorical(label[index], 10)
-        val = int(feature.shape[0] * 0.2)
+        # Create Validation Set to Model Test Set (10000 Samples)
+        val = int(feature.shape[0] * 0.16667)
         return (feature_rand[val:], label_rand[val:],
             feature_rand[:val], label_rand[:val])
 
@@ -48,10 +49,12 @@ class Model(tf.Module):
     def __init__(self):
         self.nn = tf.keras.Sequential()
         # Must define the input shape in the first layer of the neural network
-        self.nn.add(tf.keras.layers.Conv2D(filters=4, kernel_size=6, strides=1, padding='valid', activation='elu', input_shape=(28,28,1)))
+        self.nn.add(tf.keras.layers.Conv2D(filters=2, kernel_size=6, strides=1, padding='valid', activation='elu', input_shape=(28,28,1)))
         self.nn.add(tf.keras.layers.MaxPool2D(pool_size=POOL_SIZE))
         self.nn.add(tf.keras.layers.Dropout(0.05))
-        self.nn.add(tf.keras.layers.Conv2D(filters=2, kernel_size=2, strides=1, padding='valid', activation='elu'))
+        self.nn.add(tf.keras.layers.Conv2D(filters=1, kernel_size=2, strides=1, padding='valid', activation='relu'))
+        self.nn.add(tf.keras.layers.Dropout(0.05))
+        self.nn.add(tf.keras.layers.Conv2D(filters=1, kernel_size=2, strides=2, padding='valid', activation='elu'))
         self.nn.add(tf.keras.layers.Flatten())
         self.nn.add(tf.keras.layers.Dense(10,activation="softmax"))
         # Take a look at the model summary
@@ -70,7 +73,8 @@ class Model(tf.Module):
          batch_size=1024,
          epochs=100,
          validation_data=(valid_feature, valid_label),
-         callbacks=[checkpointer])
+         callbacks=[checkpointer],
+         verbose=1)
 
 if __name__ == "__main__":
     data = MNISTData()
