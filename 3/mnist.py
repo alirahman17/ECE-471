@@ -7,15 +7,10 @@ from time import time
 
 from tqdm import trange
 
-BATCH_SIZE = 10000
-NUM_BATCHES = 5000
 # HYPERPARAMS
-LEARNING_RATE = 0.1
-LAMBDA = 0.002
-KERNEL_SIZE = 4
-POOL_SIZE = 5
-FILTER = 1
-
+KERNEL_SIZE = 5
+POOL_SIZE = 4
+FILTER = 3
 
 class MNISTData(object):
     def __init__(self):
@@ -55,15 +50,10 @@ class Model(tf.Module):
         height, width = 28, 28
         self.nn = tf.keras.Sequential()
         # Must define the input shape in the first layer of the neural network
-        self.nn.add(tf.keras.layers.Conv2D(filters=8, kernel_size=KERNEL_SIZE, padding='same', activation='elu', input_shape=(28,28,1)))
+        self.nn.add(tf.keras.layers.Conv2D(filters=FILTER, kernel_size=KERNEL_SIZE, padding='same', activation='elu', input_shape=(28,28,1)))
         self.nn.add(tf.keras.layers.MaxPooling2D(pool_size=POOL_SIZE))
-        self.nn.add(tf.keras.layers.Dropout(0.3))
-        self.nn.add(tf.keras.layers.Conv2D(filters=8, kernel_size=KERNEL_SIZE, padding='same', activation='elu'))
-        self.nn.add(tf.keras.layers.MaxPooling2D(pool_size=3))
-        self.nn.add(tf.keras.layers.Dropout(0.3))
+        self.nn.add(tf.keras.layers.Dropout(0.08))
         self.nn.add(tf.keras.layers.Flatten())
-        self.nn.add(tf.keras.layers.Dense(16, activation='elu'))
-        self.nn.add(tf.keras.layers.Dropout(0.4))
         self.nn.add(tf.keras.layers.Dense(10, activation='softmax'))
         # Take a look at the model summary
         self.nn.summary()
@@ -87,3 +77,5 @@ if __name__ == "__main__":
     data = MNISTData()
     model = Model()
     model(data.train_feature, data.train_label, data.valid_feature, data.valid_label)
+    # The Following Line was added after modifying hyperparameters
+    model.evaluate(data.testImages, data.testLabels)
