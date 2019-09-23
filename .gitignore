@@ -1,0 +1,10 @@
+
+*.png
+*.pdf
+*.txt
+**/logs
+3/t10k-images-idx3-ubyte
+3/t10k-labels-idx1-ubyte
+3/train-images-idx3-ubyte
+3/train-labels-idx1-ubyte
+2/spiral2.py
