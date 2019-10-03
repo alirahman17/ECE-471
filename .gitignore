@@ -8,3 +8,5 @@
 3/train-images-idx3-ubyte
 3/train-labels-idx1-ubyte
 2/spiral2.py
+4/cifar-10-batches-py
+4/cifar-100-python

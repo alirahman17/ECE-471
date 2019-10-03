@@ -17,6 +17,7 @@ class MNISTData(object):
         """
         Images and Labels initialization
         """
+        np.random.seed(31415)
         self.trainingImages, self.trainingLabels = self.loadMNIST("train")
         self.testImages, self.testLabels = self.loadMNIST("t10k")
         self.trainingImages, self.testImages = self.trainingImages / 255.0, self.testImages / 255.0
